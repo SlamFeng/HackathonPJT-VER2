@@ -10,6 +10,7 @@ import { generateCustomerProfile } from "@/mock-ai/ai";
 import type { AgeRange, BodyType, BudgetRange, ColorName, CurrentStyle, FitPreference, HeightPreference, UsageScenario } from "@/types";
 import { useToasts } from "@/components/ToastProvider";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { PhotoUploader } from "@/components/PhotoUploader";
 
 export default function CustomerIntake() {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ export default function CustomerIntake() {
   const input = useAppStore((s) => s.customerInput);
   const update = useAppStore((s) => s.updateCustomerInput);
   const setProfile = useAppStore((s) => s.setCustomerProfile);
+  const customerPhoto = useAppStore((s) => s.customerPhoto);
+  const setCustomerPhoto = useAppStore((s) => s.setCustomerPhoto);
 
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(10);
@@ -169,6 +172,14 @@ export default function CustomerIntake() {
             onChange={(next) => update({ likedColors: next })}
           />
 
+          <PhotoUploader
+            title="真人照片参考（用于拆取 OOTD）"
+            subtitle="上传后会在 OOTD Breakdown 里按照片风格生成单品拆解（Demo Mock）。"
+            value={customerPhoto}
+            onChange={(p) => setCustomerPhoto(p)}
+            onClear={() => setCustomerPhoto(null)}
+          />
+
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-gradient-to-r from-aurora-500/10 via-white/[0.02] to-champagne-400/10 px-5 py-4 ring-1 ring-white/10">
             <div className="text-sm text-mist-50/75">底部一键生成结构化顾客画像（展示 AI 分析与加载态）。</div>
             <Button variant="primary" size="lg" onClick={onGenerate} disabled={loading}>
@@ -193,6 +204,7 @@ export default function CustomerIntake() {
             ["偏好版型", input.fitPreference],
             ["喜欢的颜色", input.likedColors.join(" / ") || "—"],
             ["不喜欢的颜色", input.dislikedColors || "—"],
+            ["参考照片", customerPhoto ? "已上传" : "未上传"],
           ].map(([k, v]) => (
             <div key={k} className="flex items-start justify-between gap-4 rounded-xl bg-white/[0.035] px-3 py-2 ring-1 ring-white/10">
               <div className="text-xs text-mist-50/75">{k}</div>

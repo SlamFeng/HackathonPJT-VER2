@@ -40,6 +40,11 @@ export type CustomerProfile = {
   rationaleSummary: string;
 };
 
+export type CustomerPhoto = {
+  name: string;
+  dataUrl: string;
+};
+
 export type Product = {
   id: string;
   name: string;

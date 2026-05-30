@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Tag } from "@/components/ui/Tag";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-import { generateOOTDBreakdown } from "@/mock-ai/ai";
+import { generateOOTDBreakdown, generateOOTDBreakdownFromPhoto } from "@/mock-ai/ai";
 import { useToasts } from "@/components/ToastProvider";
 import { ArrowRight, Sparkles, Wand2 } from "lucide-react";
 
@@ -14,6 +14,8 @@ export default function AiProfile() {
   const { push } = useToasts();
   const profile = useAppStore((s) => s.customerProfile);
   const setOOTD = useAppStore((s) => s.setOOTDItems);
+  const input = useAppStore((s) => s.customerInput);
+  const customerPhoto = useAppStore((s) => s.customerPhoto);
 
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(18);
@@ -34,7 +36,9 @@ export default function AiProfile() {
     }
     setLoading(true);
     try {
-      const items = await generateOOTDBreakdown(profile);
+      const items = customerPhoto
+        ? await generateOOTDBreakdownFromPhoto(customerPhoto, input, profile)
+        : await generateOOTDBreakdown(profile);
       setProgress(100);
       window.setTimeout(() => {
         setOOTD(items);
@@ -73,6 +77,7 @@ export default function AiProfile() {
           <div className="flex flex-wrap items-center gap-2">
             <Tag tone="accent">AI Customer Profile</Tag>
             <Tag tone="good">结构化可执行</Tag>
+            {customerPhoto ? <Tag tone="accent">已加载真人照片参考</Tag> : null}
           </div>
           <div className="mt-4 font-display text-3xl tracking-tight text-mist-50 sm:text-4xl">{profile.styleDirection}</div>
           <div className="mt-2 text-sm text-mist-50/70">把顾客信息“翻译”为门店可落地的选品策略与搭配原则。</div>
@@ -83,6 +88,21 @@ export default function AiProfile() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
+        {customerPhoto ? (
+          <Card className="overflow-hidden lg:col-span-3">
+            <CardHeader>
+              <CardTitle>照片参考（用于拆取 OOTD）</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-hidden rounded-3xl bg-white/[0.03] ring-1 ring-white/10">
+                <img src={customerPhoto.dataUrl} alt="OOTD Reference" className="h-56 w-full object-cover" />
+              </div>
+              <div className="mt-3 text-sm text-mist-50/70">
+                下一步生成 OOTD Breakdown 时，会按照片风格产出 Hat / Jacket / Innerwear / Pants / Shoes / Bag 的拆解（Demo Mock）。
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
         <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle>风格定位</CardTitle>

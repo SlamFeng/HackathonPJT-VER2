@@ -1,6 +1,7 @@
 import { MOCK_PRODUCTS } from "@/mock-data/products";
 import type {
   CustomerInput,
+  CustomerPhoto,
   CustomerProfile,
   EfficiencyMetric,
   OOTDItem,
@@ -138,6 +139,76 @@ export async function generateOOTDBreakdown(profile: CustomerProfile): Promise<O
   return workwearCore.map((i) => ({ ...i, matchScore: clamp(i.matchScore - 2, 75, 96) }));
 }
 
+export async function generateOOTDBreakdownFromPhoto(
+  photo: CustomerPhoto,
+  input: CustomerInput,
+  profile: CustomerProfile,
+): Promise<OOTDItem[]> {
+  await delay(1100);
+
+  const base: OOTDItem[] = [
+    {
+      category: "Hat",
+      itemName: "Duckbill Baseball Cap",
+      style: "Workwear",
+      color: "Navy",
+      matchScore: 86,
+      reason: "参考照片：鸭舌帽强化休闲工装氛围，同时保持上半身清爽利落。",
+    },
+    {
+      category: "Jacket",
+      itemName: "Detroit Work Jacket",
+      style: "Workwear",
+      color: "Khaki",
+      matchScore: 93,
+      reason: "参考照片：短款工装夹克是风格核心，搭配宽松裤装更显比例。",
+    },
+    {
+      category: "Innerwear",
+      itemName: "Cropped Hoodie",
+      style: "Casual",
+      color: "Black",
+      matchScore: 90,
+      reason: "参考照片：连帽内搭增强层次，黑色更好压住整体色彩。",
+    },
+    {
+      category: "Pants",
+      itemName: "Wide Curved Pants",
+      style: "Casual",
+      color: "Navy",
+      matchScore: 91,
+      reason: "参考照片：阔腿/弯刀裤型能制造下半身量感，让上衣短款更显腿长。",
+    },
+    {
+      category: "Shoes",
+      itemName: "Brown Work Boots",
+      style: "Utility",
+      color: "Brown",
+      matchScore: 88,
+      reason: "参考照片：工装靴为整体收尾，耐穿且更符合门店可销售的“完整度”。",
+    },
+    {
+      category: "Bag",
+      itemName: "Workwear Canvas Tote",
+      style: "Utility",
+      color: "Khaki",
+      matchScore: 87,
+      reason: "参考照片：大容量帆布包强化工装气质，也自然引导配件 Upsell。",
+    },
+  ];
+
+  const fitBoost = input.fitPreference === "Relaxed" || input.fitPreference === "Oversized" ? 2 : 0;
+  const sceneBoost = input.scenario === "旅行" || input.scenario === "周末休闲" ? 1 : 0;
+  const styleBoost = profile.styleDirection.includes("Workwear") ? 1 : 0;
+
+  const boost = fitBoost + sceneBoost + styleBoost;
+  return base.map((it) => ({
+    ...it,
+    matchScore: clamp(it.matchScore + boost, 76, 98),
+    reason: `${it.reason}（图像：${photo.name}）`,
+  }));
+}
+
 export async function recommendProducts(category: ProductCategory, input: CustomerInput, profile: CustomerProfile): Promise<Product[]> {
   await delay(700);
 
@@ -265,4 +336,3 @@ export function calculateEfficiencyImpact(): EfficiencyMetric[] {
     { label: "接客记录", value: "自动生成", emphasis: "neutral" },
   ];
 }
-

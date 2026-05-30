@@ -23,10 +23,12 @@ export function OotdCanvas({
   items,
   onSelectCategory,
   activeCategory,
+  centerPhotoUrl,
 }: {
   items: OOTDItem[];
   activeCategory?: ProductCategory;
   onSelectCategory: (c: ProductCategory) => void;
+  centerPhotoUrl?: string | null;
 }) {
   return (
     <div className="relative overflow-hidden rounded-3xl lp-glass">
@@ -85,10 +87,17 @@ export function OotdCanvas({
                 <div className="mt-2 font-display text-2xl tracking-tight text-mist-50">Urban Persona</div>
                 <div className="mt-4 aspect-[3/4] w-full overflow-hidden rounded-2xl bg-gradient-to-b from-ink-900/60 to-ink-950/60 ring-1 ring-white/10">
                   <div className="relative h-full w-full">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(167,139,250,0.28),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(231,169,67,0.18),transparent_50%)]" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="h-44 w-24 rounded-[999px] bg-white/[0.06] ring-1 ring-white/10 blur-[0.2px]" />
-                    </div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(110,122,199,0.22),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(201,164,106,0.16),transparent_50%)]" />
+                    {centerPhotoUrl ? (
+                      <div className="absolute inset-0">
+                        <img src={centerPhotoUrl} alt="OOTD Reference" className="h-full w-full object-cover opacity-[0.92]" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-ink-950/10 to-ink-950/45" />
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="h-44 w-24 rounded-[999px] bg-white/[0.06] ring-1 ring-white/10 blur-[0.2px]" />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
