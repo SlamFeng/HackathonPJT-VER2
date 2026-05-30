@@ -40,21 +40,6 @@ export type CustomerProfile = {
   rationaleSummary: string;
 };
 
-export type AvatarDoll = {
-  bodyType: BodyType;
-  heightPreference: HeightPreference;
-  mood: "neutral" | "smile";
-  palette: {
-    line: string;
-    skin: string;
-    hair: string;
-    suit: string;
-    accent: string;
-    shadow: string;
-  };
-  svg: string;
-};
-
 export type Product = {
   id: string;
   name: string;

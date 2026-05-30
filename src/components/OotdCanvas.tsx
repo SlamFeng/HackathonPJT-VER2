@@ -2,8 +2,6 @@ import { CATEGORY_LABEL } from "@/app/steps";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { cn } from "@/lib/utils";
-import { AvatarDoll } from "@/components/AvatarDoll";
-import type { AvatarDoll as AvatarDollType } from "@/types";
 import type { OOTDItem, ProductCategory } from "@/types";
 
 const POS: Record<ProductCategory, { x: number; y: number; align: "l" | "r" }> = {
@@ -25,12 +23,10 @@ export function OotdCanvas({
   items,
   onSelectCategory,
   activeCategory,
-  avatar,
 }: {
   items: OOTDItem[];
   activeCategory?: ProductCategory;
   onSelectCategory: (c: ProductCategory) => void;
-  avatar?: AvatarDollType | null;
 }) {
   return (
     <div className="relative overflow-hidden rounded-3xl lp-glass">
@@ -88,15 +84,11 @@ export function OotdCanvas({
                 <div className="text-xs text-mist-50/60">Customer Silhouette</div>
                 <div className="mt-2 font-display text-2xl tracking-tight text-mist-50">Urban Persona</div>
                 <div className="mt-4 aspect-[3/4] w-full overflow-hidden rounded-2xl bg-gradient-to-b from-ink-900/60 to-ink-950/60 ring-1 ring-white/10">
-                  <div className="relative flex h-full w-full items-center justify-center">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(110,122,199,0.22),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(201,164,106,0.16),transparent_50%)]" />
-                    {avatar ? (
-                      <div className="w-[80%]">
-                        <AvatarDoll avatar={avatar} className="w-full" />
-                      </div>
-                    ) : (
+                  <div className="relative h-full w-full">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(167,139,250,0.28),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(231,169,67,0.18),transparent_50%)]" />
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <div className="h-44 w-24 rounded-[999px] bg-white/[0.06] ring-1 ring-white/10 blur-[0.2px]" />
-                    )}
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between">

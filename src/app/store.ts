@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type {
-  AvatarDoll,
   CustomerInput,
   CustomerProfile,
   OOTDItem,
@@ -32,7 +31,6 @@ function emptyOutfit(): SelectedOutfit {
 type AppState = {
   customerInput: CustomerInput;
   customerProfile: CustomerProfile | null;
-  avatar: AvatarDoll | null;
   ootdItems: OOTDItem[] | null;
   activeCategory: ProductCategory;
   selectedOutfit: SelectedOutfit;
@@ -45,7 +43,6 @@ type AppActions = {
   resetProposal: () => void;
   updateCustomerInput: (patch: Partial<CustomerInput>) => void;
   setCustomerProfile: (profile: CustomerProfile) => void;
-  setAvatar: (avatar: AvatarDoll | null) => void;
   setOOTDItems: (items: OOTDItem[]) => void;
   setActiveCategory: (category: ProductCategory) => void;
   selectProduct: (category: ProductCategory, product: Product) => void;
@@ -57,7 +54,6 @@ type AppActions = {
 export const useAppStore = create<AppState & AppActions>((set, get) => ({
   customerInput: DEFAULT_INPUT,
   customerProfile: null,
-  avatar: null,
   ootdItems: null,
   activeCategory: "Jacket",
   selectedOutfit: emptyOutfit(),
@@ -69,7 +65,6 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     set({
       customerInput: DEFAULT_INPUT,
       customerProfile: null,
-      avatar: null,
       ootdItems: null,
       activeCategory: "Jacket",
       selectedOutfit: emptyOutfit(),
@@ -88,8 +83,6 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     );
     set({ customerProfile: profile, talkByType });
   },
-
-  setAvatar: (avatar) => set({ avatar }),
 
   setOOTDItems: (items) => set({ ootdItems: items }),
 
@@ -128,3 +121,4 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
 
   setVirtualPreview: (preview) => set({ virtualPreview: preview }),
 }));
+

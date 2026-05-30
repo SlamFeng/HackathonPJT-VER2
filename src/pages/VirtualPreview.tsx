@@ -10,13 +10,11 @@ import { CircularGauge } from "@/components/CircularGauge";
 import { formatJPY } from "@/utils/format";
 import { useToasts } from "@/components/ToastProvider";
 import { ArrowRight, Send, ShoppingCart, Sparkles, Save } from "lucide-react";
-import { AvatarDoll } from "@/components/AvatarDoll";
 
 export default function VirtualPreview() {
   const navigate = useNavigate();
   const { push } = useToasts();
   const profile = useAppStore((s) => s.customerProfile);
-  const avatar = useAppStore((s) => s.avatar);
   const selectedOutfit = useAppStore((s) => s.selectedOutfit);
   const preview = useAppStore((s) => s.virtualPreview);
   const setPreview = useAppStore((s) => s.setVirtualPreview);
@@ -98,15 +96,11 @@ export default function VirtualPreview() {
               <div className="text-xs text-mist-50/60">Silhouette / Illustration</div>
               <div className="mt-2 font-display text-2xl tracking-tight text-mist-50">{preview?.outfitName ?? profile?.styleDirection ?? "—"}</div>
               <div className="mt-4 aspect-[4/5] w-full overflow-hidden rounded-3xl bg-gradient-to-b from-ink-900/60 to-ink-950/60 ring-1 ring-white/10">
-                <div className="relative flex h-full w-full items-center justify-center">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(110,122,199,0.22),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(201,164,106,0.16),transparent_55%)]" />
-                  {avatar ? (
-                    <div className="w-[78%]">
-                      <AvatarDoll avatar={avatar} className="w-full" />
-                    </div>
-                  ) : (
+                <div className="relative h-full w-full">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_25%,rgba(167,139,250,0.28),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(231,169,67,0.16),transparent_55%)]" />
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <div className="h-52 w-28 rounded-[999px] bg-white/[0.06] ring-1 ring-white/10 blur-[0.2px]" />
-                  )}
+                  </div>
                 </div>
               </div>
               <div className="mt-4 text-sm text-mist-50/70">用于路演的“成果卡”，强调提案已经可以直接发给顾客。</div>
@@ -190,3 +184,4 @@ export default function VirtualPreview() {
     </div>
   );
 }
+

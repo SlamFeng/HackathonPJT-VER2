@@ -12,7 +12,6 @@ export default function OotdBreakdown() {
   const { push } = useToasts();
   const profile = useAppStore((s) => s.customerProfile);
   const items = useAppStore((s) => s.ootdItems);
-  const avatar = useAppStore((s) => s.avatar);
   const activeCategory = useAppStore((s) => s.activeCategory);
   const setActiveCategory = useAppStore((s) => s.setActiveCategory);
 
@@ -58,7 +57,6 @@ export default function OotdBreakdown() {
       <OotdCanvas
         items={items}
         activeCategory={activeCategory}
-        avatar={avatar}
         onSelectCategory={(c) => {
           setActiveCategory(c);
           push({ tone: "info", title: `已选择 ${c}`, description: "进入该分类商品推荐" });
@@ -68,3 +66,4 @@ export default function OotdBreakdown() {
     </div>
   );
 }
+
