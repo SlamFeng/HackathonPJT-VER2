@@ -1,5 +1,6 @@
 import { MOCK_PRODUCTS } from "@/mock-data/products";
 import type {
+  AvatarDoll,
   CustomerInput,
   CustomerProfile,
   EfficiencyMetric,
@@ -37,6 +38,154 @@ function inferredStyleDirection(input: CustomerInput): string {
   if (input.currentStyle === "Street") return "Street Utility Minimal";
   if (input.currentStyle === "Minimal") return "Clean Minimal Neutral";
   return "Relaxed Casual Minimal";
+}
+
+function svgEscape(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function avatarPalette(input: CustomerInput) {
+  const base = {
+    line: "rgba(242,240,234,0.82)",
+    shadow: "rgba(0,0,0,0.28)",
+    suit: "rgba(255,255,255,0.08)",
+  };
+  const accent =
+    input.currentStyle === "Workwear"
+      ? "rgba(201,164,106,0.85)"
+      : input.currentStyle === "Office"
+        ? "rgba(110,122,199,0.88)"
+        : "rgba(138,149,216,0.85)";
+
+  const hair = input.ageRange === "Teens" ? "rgba(242,240,234,0.55)" : "rgba(242,240,234,0.68)";
+  const skin = input.bodyType === "Curvy" ? "rgba(231,227,218,0.85)" : "rgba(242,240,234,0.88)";
+  return { ...base, accent, hair, skin };
+}
+
+function avatarDimensions(input: CustomerInput) {
+  const h = input.heightPreference === "Tall" ? 168 : input.heightPreference === "Short" ? 148 : 158;
+  const shoulders = input.bodyType === "Slim" ? 64 : input.bodyType === "Curvy" ? 74 : 70;
+  const waist = input.bodyType === "Slim" ? 44 : input.bodyType === "Curvy" ? 60 : 52;
+  const hips = input.bodyType === "Slim" ? 62 : input.bodyType === "Curvy" ? 82 : 74;
+  const leg = input.heightPreference === "Tall" ? 78 : input.heightPreference === "Short" ? 66 : 72;
+  return { h, shoulders, waist, hips, leg };
+}
+
+function buildAvatarSvg(input: CustomerInput, palette: AvatarDoll["palette"]) {
+  const dim = avatarDimensions(input);
+  const w = 180;
+  const h = 240;
+  const cx = w / 2;
+
+  const torsoTop = 66;
+  const torsoBottom = 152;
+  const shoulderY = torsoTop + 6;
+  const waistY = 116;
+  const hipY = 146;
+  const legY = torsoBottom + 10;
+
+  const s = dim.shoulders / 2;
+  const wa = dim.waist / 2;
+  const hi = dim.hips / 2;
+
+  const headR = 22;
+  const headY = 34;
+  const neckW = 18;
+  const neckH = 10;
+
+  const sleeve = input.fitPreference === "Oversized" ? 26 : input.fitPreference === "Slim" ? 18 : 22;
+  const armDrop = input.fitPreference === "Oversized" ? 46 : 40;
+
+  const torsoPath = [
+    `M ${cx - s} ${shoulderY}`,
+    `Q ${cx - s - sleeve} ${shoulderY + 18} ${cx - s + 6} ${waistY}`,
+    `Q ${cx - wa - 10} ${hipY} ${cx - hi} ${hipY}`,
+    `Q ${cx - hi + 10} ${torsoBottom} ${cx - 10} ${torsoBottom + 2}`,
+    `Q ${cx} ${torsoBottom + 8} ${cx + 10} ${torsoBottom + 2}`,
+    `Q ${cx + hi - 10} ${torsoBottom} ${cx + hi} ${hipY}`,
+    `Q ${cx + wa + 10} ${hipY} ${cx + s - 6} ${waistY}`,
+    `Q ${cx + s + sleeve} ${shoulderY + 18} ${cx + s} ${shoulderY}`,
+    `Z`,
+  ].join(" ");
+
+  const legGap = input.bodyType === "Slim" ? 10 : 14;
+  const legW = input.bodyType === "Slim" ? 20 : input.bodyType === "Curvy" ? 26 : 22;
+  const legH = dim.leg;
+  const legTop = legY;
+  const legBottom = Math.min(h - 18, legTop + legH);
+
+  const leftLegX = cx - legGap / 2 - legW;
+  const rightLegX = cx + legGap / 2;
+  const legRadius = input.fitPreference === "Slim" ? 10 : 14;
+
+  const coatDrop = input.currentStyle === "Workwear" ? 18 : 12;
+  const coatAlpha = input.currentStyle === "Office" ? 0.06 : 0.08;
+
+  const mood = input.scenario === "约会" ? "smile" : "neutral";
+  const mouth = mood === "smile" ? `M ${cx - 7} ${headY + 14} Q ${cx} ${headY + 20} ${cx + 7} ${headY + 14}` : `M ${cx - 6} ${headY + 16} L ${cx + 6} ${headY + 16}`;
+
+  const label = `${input.heightPreference} / ${input.bodyType} · ${input.fitPreference}`;
+  const labelSafe = svgEscape(label);
+
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="100%" height="100%">
+  <defs>
+    <linearGradient id="lpAvatarBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="rgba(110,122,199,0.20)" />
+      <stop offset="1" stop-color="rgba(201,164,106,0.14)" />
+    </linearGradient>
+    <filter id="lpSoft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="10" y="10" width="${w - 20}" height="${h - 20}" rx="26" fill="url(#lpAvatarBg)" opacity="0.95" />
+  <ellipse cx="${cx}" cy="${h - 24}" rx="52" ry="12" fill="${palette.shadow}" opacity="0.22" filter="url(#lpSoft)" />
+
+  <g opacity="0.98">
+    <rect x="${cx - neckW / 2}" y="${headY + headR - 2}" width="${neckW}" height="${neckH}" rx="8" fill="${palette.skin}" opacity="0.92" />
+
+    <circle cx="${cx}" cy="${headY}" r="${headR}" fill="${palette.skin}" />
+    <path d="M ${cx - 18} ${headY - 8} Q ${cx} ${headY - 24} ${cx + 18} ${headY - 8} Q ${cx} ${headY - 14} ${cx - 18} ${headY - 8} Z" fill="${palette.hair}" opacity="0.85" />
+    <circle cx="${cx - 7}" cy="${headY + 6}" r="1.6" fill="${palette.line}" opacity="0.7" />
+    <circle cx="${cx + 7}" cy="${headY + 6}" r="1.6" fill="${palette.line}" opacity="0.7" />
+    <path d="${mouth}" stroke="${palette.line}" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7" />
+
+    <path d="${torsoPath}" fill="${palette.suit}" opacity="0.95" stroke="${palette.line}" stroke-width="1.2" stroke-opacity="0.18" />
+    <path d="M ${cx - hi + 8} ${torsoTop + 12} Q ${cx} ${waistY + 8} ${cx + hi - 8} ${torsoTop + 12}" stroke="${palette.accent}" stroke-width="2" opacity="0.55" fill="none" />
+
+    <rect x="${leftLegX}" y="${legTop}" width="${legW}" height="${legBottom - legTop}" rx="${legRadius}" fill="rgba(255,255,255,0.06)" stroke="${palette.line}" stroke-width="1" stroke-opacity="0.14" />
+    <rect x="${rightLegX}" y="${legTop}" width="${legW}" height="${legBottom - legTop}" rx="${legRadius}" fill="rgba(255,255,255,0.06)" stroke="${palette.line}" stroke-width="1" stroke-opacity="0.14" />
+
+    <rect x="${cx - s - 18}" y="${shoulderY + 18}" width="${18}" height="${armDrop}" rx="10" fill="rgba(255,255,255,0.05)" />
+    <rect x="${cx + s}" y="${shoulderY + 18}" width="${18}" height="${armDrop}" rx="10" fill="rgba(255,255,255,0.05)" />
+
+    <path d="M ${cx - hi} ${torsoTop + 8} Q ${cx} ${torsoTop + 36} ${cx + hi} ${torsoTop + 8} L ${cx + hi} ${torsoBottom + coatDrop} Q ${cx} ${torsoBottom + coatDrop + 10} ${cx - hi} ${torsoBottom + coatDrop} Z" fill="rgba(255,255,255,${coatAlpha})" />
+  </g>
+
+  <g opacity="0.95">
+    <text x="${cx}" y="${h - 16}" text-anchor="middle" font-family="IBM Plex Sans, ui-sans-serif" font-size="11" fill="${palette.line}" opacity="0.72">${labelSafe}</text>
+  </g>
+</svg>
+`.trim();
+}
+
+export async function generate2DAvatar(input: CustomerInput): Promise<AvatarDoll> {
+  await delay(650);
+  const palette = avatarPalette(input);
+  const svg = buildAvatarSvg(input, palette);
+  const mood = input.scenario === "约会" ? "smile" : "neutral";
+  return {
+    bodyType: input.bodyType,
+    heightPreference: input.heightPreference,
+    mood,
+    palette,
+    svg,
+  };
 }
 
 export async function generateCustomerProfile(input: CustomerInput): Promise<CustomerProfile> {
@@ -265,4 +414,3 @@ export function calculateEfficiencyImpact(): EfficiencyMetric[] {
     { label: "接客记录", value: "自动生成", emphasis: "neutral" },
   ];
 }
-

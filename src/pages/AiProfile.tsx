@@ -8,11 +8,13 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { generateOOTDBreakdown } from "@/mock-ai/ai";
 import { useToasts } from "@/components/ToastProvider";
 import { ArrowRight, Sparkles, Wand2 } from "lucide-react";
+import { AvatarDoll } from "@/components/AvatarDoll";
 
 export default function AiProfile() {
   const navigate = useNavigate();
   const { push } = useToasts();
   const profile = useAppStore((s) => s.customerProfile);
+  const avatar = useAppStore((s) => s.avatar);
   const setOOTD = useAppStore((s) => s.setOOTDItems);
 
   const [loading, setLoading] = React.useState(false);
@@ -83,6 +85,25 @@ export default function AiProfile() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="overflow-hidden">
+          <CardHeader>
+            <CardTitle>2D 人偶（体型可视化）</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {avatar ? (
+              <div className="rounded-3xl bg-white/[0.03] p-4 ring-1 ring-white/10">
+                <div className="mx-auto max-w-[240px]">
+                  <AvatarDoll avatar={avatar} className="w-full" />
+                </div>
+                <div className="mt-3 text-sm text-mist-50/70">用于更直观观察体型轮廓与版型建议。</div>
+              </div>
+            ) : (
+              <div className="rounded-2xl bg-white/[0.03] px-4 py-4 text-sm text-mist-50/70 ring-1 ring-white/10">
+                点击上一页“生成 AI 顾客画像”后会自动生成 2D 人偶。
+              </div>
+            )}
+          </CardContent>
+        </Card>
         <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle>风格定位</CardTitle>

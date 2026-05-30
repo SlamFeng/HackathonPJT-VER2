@@ -6,7 +6,7 @@ import { Tag } from "@/components/ui/Tag";
 import { InputPills, MultiSelectChips } from "@/components/InputPills";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useAppStore } from "@/app/store";
-import { generateCustomerProfile } from "@/mock-ai/ai";
+import { generate2DAvatar, generateCustomerProfile } from "@/mock-ai/ai";
 import type { AgeRange, BodyType, BudgetRange, ColorName, CurrentStyle, FitPreference, HeightPreference, UsageScenario } from "@/types";
 import { useToasts } from "@/components/ToastProvider";
 import { ArrowRight, Sparkles } from "lucide-react";
@@ -17,6 +17,7 @@ export default function CustomerIntake() {
   const input = useAppStore((s) => s.customerInput);
   const update = useAppStore((s) => s.updateCustomerInput);
   const setProfile = useAppStore((s) => s.setCustomerProfile);
+  const setAvatar = useAppStore((s) => s.setAvatar);
 
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(10);
@@ -33,10 +34,11 @@ export default function CustomerIntake() {
   const onGenerate = async () => {
     setLoading(true);
     try {
-      const profile = await generateCustomerProfile(input);
+      const [profile, avatar] = await Promise.all([generateCustomerProfile(input), generate2DAvatar(input)]);
       setProgress(100);
       window.setTimeout(() => {
         setProfile(profile);
+        setAvatar(avatar);
         setLoading(false);
         push({ tone: "success", title: "AI 顾客画像已生成", description: "进入 AI Profile 查看结构化结果" });
         navigate("/app/profile");
