@@ -1,0 +1,198 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,0..100&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Fraunces";
+  --font-sans: "IBM Plex Sans";
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root,
+.dark {
+  --lp-ink-950: 14 15 17;
+  --lp-ink-900: 19 20 22;
+  --lp-ink-850: 23 24 27;
+  --lp-ink-800: 29 30 34;
+  --lp-ink-700: 42 44 48;
+
+  --lp-mist-50: 242 240 234;
+  --lp-mist-100: 231 227 218;
+  --lp-mist-200: 214 208 196;
+  --lp-mist-300: 183 177 167;
+
+  --lp-alloy-50: 246 244 241;
+  --lp-alloy-100: 236 232 226;
+  --lp-alloy-200: 207 201 190;
+  --lp-alloy-300: 168 161 150;
+  --lp-alloy-400: 143 138 130;
+  --lp-alloy-500: 111 107 101;
+  --lp-alloy-600: 75 73 70;
+
+  --lp-aurora-50: 241 242 250;
+  --lp-aurora-100: 228 231 246;
+  --lp-aurora-200: 201 207 240;
+  --lp-aurora-300: 170 179 230;
+  --lp-aurora-400: 138 149 216;
+  --lp-aurora-500: 110 122 199;
+  --lp-aurora-600: 86 95 176;
+
+  --lp-champagne-50: 251 246 238;
+  --lp-champagne-100: 243 231 213;
+  --lp-champagne-200: 231 208 172;
+  --lp-champagne-300: 215 182 128;
+  --lp-champagne-400: 201 164 106;
+  --lp-champagne-500: 167 131 79;
+
+  --lp-success-50: 233 243 238;
+  --lp-success-100: 209 231 222;
+  --lp-success-200: 166 207 191;
+  --lp-success-300: 134 188 168;
+  --lp-success-400: 111 163 139;
+  --lp-success-500: 95 143 122;
+  --lp-success-600: 77 118 101;
+
+  --lp-warning-50: 251 244 234;
+  --lp-warning-100: 244 229 206;
+  --lp-warning-200: 231 207 162;
+  --lp-warning-300: 218 182 125;
+  --lp-warning-400: 208 167 103;
+  --lp-warning-500: 187 145 85;
+  --lp-warning-600: 154 117 69;
+
+  --lp-danger-50: 248 236 238;
+  --lp-danger-100: 240 214 217;
+  --lp-danger-200: 226 176 182;
+  --lp-danger-300: 207 141 149;
+  --lp-danger-400: 195 122 128;
+  --lp-danger-500: 169 96 101;
+  --lp-danger-600: 134 75 79;
+
+  --lp-glass-bg: 255 255 255;
+  --lp-glass-border: 255 255 255;
+}
+
+.light {
+  --lp-ink-950: 245 242 235;
+  --lp-ink-900: 238 234 226;
+  --lp-ink-850: 229 223 214;
+  --lp-ink-800: 217 210 199;
+  --lp-ink-700: 189 182 171;
+
+  --lp-mist-50: 21 21 20;
+  --lp-mist-100: 38 38 36;
+  --lp-mist-200: 70 69 66;
+  --lp-mist-300: 95 92 87;
+
+  --lp-alloy-50: 255 255 255;
+  --lp-alloy-100: 248 246 242;
+  --lp-alloy-200: 230 225 216;
+  --lp-alloy-300: 196 189 177;
+  --lp-alloy-400: 162 156 146;
+  --lp-alloy-500: 120 116 110;
+  --lp-alloy-600: 82 80 76;
+
+  --lp-aurora-50: 243 244 252;
+  --lp-aurora-100: 230 234 250;
+  --lp-aurora-200: 206 212 245;
+  --lp-aurora-300: 178 187 234;
+  --lp-aurora-400: 138 149 216;
+  --lp-aurora-500: 110 122 199;
+  --lp-aurora-600: 86 95 176;
+
+  --lp-champagne-50: 251 248 242;
+  --lp-champagne-100: 245 238 226;
+  --lp-champagne-200: 233 220 198;
+  --lp-champagne-300: 220 199 164;
+  --lp-champagne-400: 201 164 106;
+  --lp-champagne-500: 167 131 79;
+
+  --lp-success-50: 236 247 242;
+  --lp-success-100: 220 240 231;
+  --lp-success-200: 183 223 206;
+  --lp-success-300: 145 200 176;
+  --lp-success-400: 111 163 139;
+  --lp-success-500: 95 143 122;
+  --lp-success-600: 77 118 101;
+
+  --lp-warning-50: 253 249 242;
+  --lp-warning-100: 248 240 228;
+  --lp-warning-200: 237 224 199;
+  --lp-warning-300: 225 205 168;
+  --lp-warning-400: 208 167 103;
+  --lp-warning-500: 187 145 85;
+  --lp-warning-600: 154 117 69;
+
+  --lp-danger-50: 252 244 245;
+  --lp-danger-100: 247 232 234;
+  --lp-danger-200: 236 208 211;
+  --lp-danger-300: 220 178 184;
+  --lp-danger-400: 195 122 128;
+  --lp-danger-500: 169 96 101;
+  --lp-danger-600: 134 75 79;
+
+  --lp-glass-bg: 0 0 0;
+  --lp-glass-border: 0 0 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink-950 text-mist-50;
+}
+
+.light body {
+  @apply bg-ink-950 text-mist-50;
+}
+
+::selection {
+  background: rgba(110, 122, 199, 0.38);
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--lp-aurora-500) / 0.55);
+  outline-offset: 3px;
+}
+
+@layer utilities {
+  .lp-mesh {
+    background:
+      radial-gradient(1200px 640px at 14% 10%, rgb(var(--lp-aurora-500) / 0.18), transparent 58%),
+      radial-gradient(1100px 560px at 86% 16%, rgb(var(--lp-champagne-400) / 0.16), transparent 56%),
+      radial-gradient(900px 520px at 50% 92%, rgb(var(--lp-aurora-400) / 0.10), transparent 58%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.00));
+  }
+
+  .lp-noise {
+    background-image:
+      radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      radial-gradient(rgba(0, 0, 0, 0.10) 1px, transparent 1px);
+    background-size: 24px 24px, 18px 18px;
+    background-position: 0 0, 10px 14px;
+    mix-blend-mode: overlay;
+    opacity: 0.22;
+  }
+
+  .lp-glass {
+    background-color: rgb(var(--lp-glass-bg) / 0.06);
+    border: 1px solid rgb(var(--lp-glass-border) / 0.14);
+    box-shadow: 0 0 0 1px rgb(var(--lp-glass-border) / 0.05), 0 28px 70px rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(18px);
+  }
+
+  .lp-glass-soft {
+    background-color: rgb(var(--lp-glass-bg) / 0.045);
+    border: 1px solid rgb(var(--lp-glass-border) / 0.11);
+    box-shadow: 0 0 0 1px rgb(var(--lp-glass-border) / 0.04), 0 20px 60px rgb(0 0 0 / 0.25);
+    backdrop-filter: blur(16px);
+  }
+}
