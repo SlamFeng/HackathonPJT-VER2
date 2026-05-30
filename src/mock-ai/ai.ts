@@ -40,6 +40,56 @@ function inferredStyleDirection(input: CustomerInput): string {
   return "Relaxed Casual Minimal";
 }
 
+async function cropThumb(dataUrl: string, rect: { x: number; y: number; w: number; h: number }, size = 320) {
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const el = new Image();
+    el.onload = () => resolve(el);
+    el.onerror = () => reject(new Error("Failed to load image"));
+    el.src = dataUrl;
+  });
+
+  const sx = Math.max(0, Math.min(img.width - 1, Math.round(rect.x * img.width)));
+  const sy = Math.max(0, Math.min(img.height - 1, Math.round(rect.y * img.height)));
+  const sw = Math.max(1, Math.min(img.width - sx, Math.round(rect.w * img.width)));
+  const sh = Math.max(1, Math.min(img.height - sy, Math.round(rect.h * img.height)));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return dataUrl;
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.fillStyle = "rgba(255,255,255,0)";
+  ctx.clearRect(0, 0, size, size);
+
+  const scale = Math.max(size / sw, size / sh);
+  const dw = sw * scale;
+  const dh = sh * scale;
+  const dx = (size - dw) / 2;
+  const dy = (size - dh) / 2;
+  ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+
+  return canvas.toDataURL("image/jpeg", 0.86);
+}
+
+async function extractOotdThumbnails(photo: CustomerPhoto) {
+  const rects: Record<ProductCategory, { x: number; y: number; w: number; h: number }> = {
+    Hat: { x: 0.32, y: 0.02, w: 0.36, h: 0.20 },
+    Jacket: { x: 0.22, y: 0.18, w: 0.56, h: 0.32 },
+    Innerwear: { x: 0.30, y: 0.24, w: 0.40, h: 0.26 },
+    Pants: { x: 0.22, y: 0.44, w: 0.56, h: 0.40 },
+    Shoes: { x: 0.18, y: 0.78, w: 0.64, h: 0.22 },
+    Bag: { x: 0.04, y: 0.34, w: 0.36, h: 0.34 },
+  };
+
+  const entries = await Promise.all(
+    (Object.keys(rects) as ProductCategory[]).map(async (k) => [k, await cropThumb(photo.dataUrl, rects[k])] as const),
+  );
+  return Object.fromEntries(entries) as Record<ProductCategory, string>;
+}
+
 export async function generateCustomerProfile(input: CustomerInput): Promise<CustomerProfile> {
   await delay(1100);
 
@@ -146,6 +196,8 @@ export async function generateOOTDBreakdownFromPhoto(
 ): Promise<OOTDItem[]> {
   await delay(1100);
 
+  const thumbs = await extractOotdThumbnails(photo);
+
   const base: OOTDItem[] = [
     {
       category: "Hat",
@@ -154,6 +206,8 @@ export async function generateOOTDBreakdownFromPhoto(
       color: "Navy",
       matchScore: 86,
       reason: "参考照片：鸭舌帽强化休闲工装氛围，同时保持上半身清爽利落。",
+      labelZh: "鸭舌棒球帽",
+      thumbnailUrl: thumbs.Hat,
     },
     {
       category: "Jacket",
@@ -162,6 +216,8 @@ export async function generateOOTDBreakdownFromPhoto(
       color: "Khaki",
       matchScore: 93,
       reason: "参考照片：短款工装夹克是风格核心，搭配宽松裤装更显比例。",
+      labelZh: "工装夹克",
+      thumbnailUrl: thumbs.Jacket,
     },
     {
       category: "Innerwear",
@@ -170,6 +226,8 @@ export async function generateOOTDBreakdownFromPhoto(
       color: "Black",
       matchScore: 90,
       reason: "参考照片：连帽内搭增强层次，黑色更好压住整体色彩。",
+      labelZh: "短款连帽卫衣",
+      thumbnailUrl: thumbs.Innerwear,
     },
     {
       category: "Pants",
@@ -178,6 +236,8 @@ export async function generateOOTDBreakdownFromPhoto(
       color: "Navy",
       matchScore: 91,
       reason: "参考照片：阔腿/弯刀裤型能制造下半身量感，让上衣短款更显腿长。",
+      labelZh: "弯刀阔腿裤",
+      thumbnailUrl: thumbs.Pants,
     },
     {
       category: "Shoes",
@@ -186,6 +246,8 @@ export async function generateOOTDBreakdownFromPhoto(
       color: "Brown",
       matchScore: 88,
       reason: "参考照片：工装靴为整体收尾，耐穿且更符合门店可销售的“完整度”。",
+      labelZh: "马丁靴/工装靴",
+      thumbnailUrl: thumbs.Shoes,
     },
     {
       category: "Bag",
@@ -194,6 +256,8 @@ export async function generateOOTDBreakdownFromPhoto(
       color: "Khaki",
       matchScore: 87,
       reason: "参考照片：大容量帆布包强化工装气质，也自然引导配件 Upsell。",
+      labelZh: "工装帆布包",
+      thumbnailUrl: thumbs.Bag,
     },
   ];
 

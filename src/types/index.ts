@@ -65,6 +65,8 @@ export type OOTDItem = {
   color: string;
   matchScore: number;
   reason: string;
+  thumbnailUrl?: string;
+  labelZh?: string;
 };
 
 export type SelectedOutfit = {
